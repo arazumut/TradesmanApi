@@ -1,184 +1,184 @@
-# 🧾 Esnaf Yönetim Sistemi API
+# 🧾 Tradesman Management System API
 
-Mahalledeki küçük esnafın ürünlerini yönetebileceği ve mobil uygulama üzerinden gelen müşteri siparişlerini takip edebileceği sade ama güçlü bir backend API.
+A simple yet powerful backend API that allows neighborhood small tradesmen to manage their products and track customer orders from mobile applications.
 
-## 🚀 Özellikler
+## 🚀 Features
 
-- ✅ **JWT Kimlik Doğrulama** - Güvenli giriş sistemi
-- ✅ **Rol Bazlı Yetkilendirme** - Admin, Esnaf, Müşteri rolleri
-- ✅ **Esnaf Yönetimi** - Dükkan oluşturma ve düzenleme
-- ✅ **Ürün Yönetimi** - Ürün ekleme, güncelleme, silme
-- ✅ **Sipariş Sistemi** - Müşteri siparişleri ve durum takibi
-- ✅ **SQLite Veritabanı** - Hafif ve pratik
-- ✅ **Swagger Dokümantasyonu** - Interaktif API dokümantasyonu
-- ✅ **CORS Desteği** - Frontend entegrasyonu için hazır
+- ✅ **JWT Authentication** - Secure login system
+- ✅ **Role-Based Authorization** - Admin, Shop, Customer roles
+- ✅ **Shop Management** - Create and edit shops
+- ✅ **Product Management** - Add, update, delete products
+- ✅ **Order System** - Customer orders and status tracking
+- ✅ **SQLite Database** - Lightweight and practical
+- ✅ **Swagger Documentation** - Interactive API documentation
+- ✅ **CORS Support** - Ready for frontend integration
 
-## ⚙️ Teknolojiler
+## ⚙️ Technologies
 
-- **Go 1.21+** - Modern ve performanslı backend
-- **Gin** - Hızlı web framework
-- **GORM** - Güçlü ORM kütüphanesi
-- **SQLite** - Hafif veritabanı
-- **JWT** - Token tabanlı kimlik doğrulama
-- **Swagger** - API dokümantasyonu
+- **Go 1.21+** - Modern and performant backend
+- **Gin** - Fast web framework
+- **GORM** - Powerful ORM library
+- **SQLite** - Lightweight database
+- **JWT** - Token-based authentication
+- **Swagger** - API documentation
 
-## 🏃‍♂️ Hızlı Başlangıç
+## 🏃‍♂️ Quick Start
 
-### 1. Proje Kurulumu
+### 1. Project Setup
 
 ```bash
-# Bağımlılıkları yükle
+# Install dependencies
 go mod tidy
 
-# Swagger dokümantasyonu oluştur (opsiyonel)
+# Generate Swagger documentation (optional)
 go install github.com/swaggo/swag/cmd/swag@latest
 swag init
 ```
 
-### 2. Sunucuyu Başlat
+### 2. Start Server
 
 ```bash
 go run main.go
 ```
 
-Sunucu başarıyla başladığında:
+When server starts successfully:
 - 🌐 **API**: http://localhost:8080
 - 📚 **Swagger**: http://localhost:8080/swagger/index.html
 
 ## 📡 API Endpoints
 
 ### 🔐 Authentication
-- `POST /auth/register` - Kullanıcı kaydı
-- `POST /auth/login` - Kullanıcı girişi
-- `GET /auth/me` - Profil bilgileri (🔒 Auth gerekli)
+- `POST /auth/register` - User registration
+- `POST /auth/login` - User login
+- `GET /auth/me` - Profile information (🔒 Auth required)
 
-### 🏪 Esnaf Yönetimi
-- `GET /shops` - Tüm esnafları listele
-- `GET /shops/{id}` - Esnaf detayı
-- `POST /shops` - Yeni esnaf oluştur (🔒 Esnaf rolü)
-- `PUT /shops/{id}` - Esnaf bilgilerini güncelle (🔒 Esnaf rolü)
-- `GET /shops/{id}/products` - Esnafın ürünleri
+### 🏪 Shop Management
+- `GET /shops` - List all shops
+- `GET /shops/{id}` - Shop details
+- `POST /shops` - Create new shop (🔒 Shop role)
+- `PUT /shops/{id}` - Update shop information (🔒 Shop role)
+- `GET /shops/{id}/products` - Shop's products
 
-### 📦 Ürün Yönetimi
-- `GET /products` - Tüm ürünleri listele
-- `GET /products/{id}` - Ürün detayı
-- `POST /products` - Yeni ürün ekle (🔒 Esnaf rolü)
-- `PUT /products/{id}` - Ürün güncelle (🔒 Esnaf rolü)
-- `DELETE /products/{id}` - Ürün sil (🔒 Esnaf rolü)
+### 📦 Product Management
+- `GET /products` - List all products
+- `GET /products/{id}` - Product details
+- `POST /products` - Add new product (🔒 Shop role)
+- `PUT /products/{id}` - Update product (🔒 Shop role)
+- `DELETE /products/{id}` - Delete product (🔒 Shop role)
 
-### 🛒 Sipariş Yönetimi
-- `POST /orders` - Sipariş ver (🔒 Müşteri rolü)
-- `GET /orders` - Siparişleri listele (🔒 Auth gerekli)
-- `GET /orders/{id}` - Sipariş detayı (🔒 Auth gerekli)
-- `PUT /orders/{id}/status` - Sipariş durumu güncelle (🔒 Esnaf rolü)
+### 🛒 Order Management
+- `POST /orders` - Place order (🔒 Customer role)
+- `GET /orders` - List orders (🔒 Auth required)
+- `GET /orders/{id}` - Order details (🔒 Auth required)
+- `PUT /orders/{id}/status` - Update order status (🔒 Shop role)
 
-## 👥 Kullanıcı Rolleri
+## 👥 User Roles
 
-### 🛒 **Customer (Müşteri)**
-- Esnafları ve ürünleri görüntüleyebilir
-- Sipariş verebilir
-- Kendi siparişlerini takip edebilir
+### 🛒 **Customer**
+- Can view shops and products
+- Can place orders
+- Can track their own orders
 
-### 🏪 **Shop (Esnaf)**
-- Dükkan oluşturabilir ve yönetebilir
-- Ürün ekleyebilir, güncelleyebilir, silebilir
-- Gelen siparişleri görüntüleyebilir
-- Sipariş durumlarını güncelleyebilir
+### 🏪 **Shop (Tradesman)**
+- Can create and manage shop
+- Can add, update, delete products
+- Can view incoming orders
+- Can update order statuses
 
 ### 👑 **Admin**
-- Tüm verilere erişim
-- Sistem geneli kontrol
+- Access to all data
+- System-wide control
 
 ## 🔒 Authentication
 
-API, JWT token tabanlı kimlik doğrulama kullanır. Swagger arayüzünde "Authorize" butonuna tıklayarak token'ınızı girebilirsiniz.
+The API uses JWT token-based authentication. You can enter your token by clicking the "Authorize" button in the Swagger interface.
 
 **Header Format:**
 ```
 Authorization: Bearer YOUR_JWT_TOKEN
 ```
 
-## 📊 Veritabanı Şeması
+## 📊 Database Schema
 
-### Users (Kullanıcılar)
+### Users
 - `id`, `email`, `password`, `name`, `phone`, `role`, `created_at`, `updated_at`
 
-### Shops (Esnaflar)
+### Shops
 - `id`, `user_id`, `name`, `description`, `address`, `phone`, `is_active`, `created_at`, `updated_at`
 
-### Products (Ürünler)
+### Products
 - `id`, `shop_id`, `name`, `description`, `price`, `stock`, `is_active`, `image_url`, `created_at`, `updated_at`
 
-### Orders (Siparişler)
+### Orders
 - `id`, `user_id`, `shop_id`, `total_amount`, `status`, `note`, `created_at`, `updated_at`
 
-### Order Items (Sipariş Kalemleri)
+### Order Items
 - `id`, `order_id`, `product_id`, `quantity`, `price`, `created_at`
 
-## 📋 Sipariş Durumları
+## 📋 Order Statuses
 
-- `pending` - Beklemede
-- `confirmed` - Onaylandı
-- `preparing` - Hazırlanıyor
-- `ready` - Hazır
-- `delivered` - Teslim edildi
-- `cancelled` - İptal edildi
+- `pending` - Pending
+- `confirmed` - Confirmed
+- `preparing` - Preparing
+- `ready` - Ready
+- `delivered` - Delivered
+- `cancelled` - Cancelled
 
-## 🛠️ Geliştirme
+## 🛠️ Development
 
-### Test Verisi Oluşturma
+### Creating Test Data
 
-1. Önce bir esnaf kullanıcısı kaydet:
+1. First register a shop user:
 ```json
 POST /auth/register
 {
-  "name": "Ahmet Usta",
-  "email": "ahmet@example.com",
+  "name": "John Smith",
+  "email": "john@example.com",
   "password": "123456",
   "phone": "0555-123-4567",
   "role": "shop"
 }
 ```
 
-2. Dükkan oluştur:
+2. Create a shop:
 ```json
 POST /shops
 {
-  "name": "Ahmet'in Bakkalı",
-  "description": "Mahallenin en iyi bakkalı",
-  "address": "Atatürk Mah. Cumhuriyet Cad. No:15",
+  "name": "John's Grocery",
+  "description": "The best grocery in the neighborhood",
+  "address": "Main Street No:15",
   "phone": "0555-123-4567"
 }
 ```
 
-3. Ürün ekle:
+3. Add a product:
 ```json
 POST /products
 {
-  "name": "Ekmek",
-  "description": "Taze günlük ekmek",
+  "name": "Bread",
+  "description": "Fresh daily bread",
   "price": 2.50,
   "stock": 100,
-  "image_url": "https://example.com/ekmek.jpg"
+  "image_url": "https://example.com/bread.jpg"
 }
 ```
 
-## 🤝 Katkıda Bulunma
+## 🤝 Contributing
 
-1. Projeyi fork edin
-2. Feature branch oluşturun (`git checkout -b feature/amazing-feature`)
-3. Değişikliklerinizi commit edin (`git commit -m 'Add amazing feature'`)
-4. Branch'inizi push edin (`git push origin feature/amazing-feature`)
-5. Pull Request açın
+1. Fork the project
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
-## 📄 Lisans
+## 📄 License
 
-Bu proje Apache 2.0 lisansı altında lisanslanmıştır. Detaylar için `LICENSE` dosyasına bakın.
+This project is licensed under the Apache 2.0 License. See the `LICENSE` file for details.
 
-## 📞 İletişim
+## 📞 Contact
 
-Herhangi bir sorunuz varsa lütfen issue açın veya email gönderin.
+If you have any questions, please open an issue or send an email.
 
 ---
 
-**Mutlu kodlamalar! 🚀** 
+**Happy coding! 🚀** 
