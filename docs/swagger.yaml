@@ -1,0 +1,620 @@
+basePath: /
+definitions:
+  controllers.CreateOrderRequest:
+    properties:
+      items:
+        items:
+          $ref: '#/definitions/controllers.OrderItem'
+        minItems: 1
+        type: array
+      note:
+        type: string
+      shop_id:
+        type: integer
+    required:
+    - items
+    - shop_id
+    type: object
+  controllers.CreateProductRequest:
+    properties:
+      description:
+        type: string
+      image_url:
+        type: string
+      name:
+        type: string
+      price:
+        type: number
+      stock:
+        minimum: 0
+        type: integer
+    required:
+    - name
+    - price
+    type: object
+  controllers.CreateShopRequest:
+    properties:
+      address:
+        type: string
+      description:
+        type: string
+      name:
+        type: string
+      phone:
+        type: string
+    required:
+    - name
+    type: object
+  controllers.LoginRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  controllers.OrderItem:
+    properties:
+      product_id:
+        type: integer
+      quantity:
+        type: integer
+    required:
+    - product_id
+    - quantity
+    type: object
+  controllers.RegisterRequest:
+    properties:
+      email:
+        type: string
+      name:
+        type: string
+      password:
+        minLength: 6
+        type: string
+      phone:
+        type: string
+      role:
+        $ref: '#/definitions/models.UserRole'
+    required:
+    - email
+    - name
+    - password
+    - role
+    type: object
+  models.UserRole:
+    enum:
+    - admin
+    - shop
+    - customer
+    type: string
+    x-enum-comments:
+      RoleCustomer: Müşteri
+      RoleShop: Esnaf
+    x-enum-varnames:
+    - RoleAdmin
+    - RoleShop
+    - RoleCustomer
+host: localhost:8080
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: Mahalledeki küçük esnafın ürünlerini yönetebileceği ve mobil uygulama
+    üzerinden gelen müşteri siparişlerini takip edebileceği backend API
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  termsOfService: http://swagger.io/terms/
+  title: Esnaf Yönetim Sistemi API
+  version: "1.0"
+paths:
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Kullanıcı girişi yapar ve JWT token döner
+      parameters:
+      - description: Giriş bilgileri
+        in: body
+        name: credentials
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Kullanıcı Girişi
+      tags:
+      - Auth
+  /auth/me:
+    get:
+      description: Mevcut kullanıcının profil bilgilerini getirir
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Kullanıcı Profili
+      tags:
+      - Auth
+  /auth/register:
+    post:
+      consumes:
+      - application/json
+      description: Yeni kullanıcı kaydı oluşturur
+      parameters:
+      - description: Kullanıcı bilgileri
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.RegisterRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Kullanıcı Kaydı
+      tags:
+      - Auth
+  /orders:
+    get:
+      description: Mevcut kullanıcının siparişlerini listeler
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Kullanıcının Siparişlerini Listele
+      tags:
+      - Orders
+    post:
+      consumes:
+      - application/json
+      description: Yeni sipariş oluşturur (sadece müşteriler)
+      parameters:
+      - description: Sipariş bilgileri
+        in: body
+        name: order
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.CreateOrderRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "403":
+          description: Forbidden
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Sipariş Oluştur
+      tags:
+      - Orders
+  /orders/{id}:
+    get:
+      description: Belirli bir siparişin detaylarını getirir
+      parameters:
+      - description: Sipariş ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "403":
+          description: Forbidden
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Sipariş Detayı
+      tags:
+      - Orders
+  /orders/{id}/status:
+    put:
+      consumes:
+      - application/json
+      description: Sipariş durumunu günceller (sadece esnaflar)
+      parameters:
+      - description: Sipariş ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Yeni durum
+        in: body
+        name: status
+        required: true
+        schema:
+          additionalProperties:
+            type: string
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "403":
+          description: Forbidden
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Sipariş Durumu Güncelle
+      tags:
+      - Orders
+  /products:
+    get:
+      description: Aktif olan tüm ürünleri listeler
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Tüm Ürünleri Listele
+      tags:
+      - Products
+    post:
+      consumes:
+      - application/json
+      description: Yeni ürün oluşturur (sadece esnaflar)
+      parameters:
+      - description: Ürün bilgileri
+        in: body
+        name: product
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.CreateProductRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "403":
+          description: Forbidden
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Ürün Oluştur
+      tags:
+      - Products
+  /products/{id}:
+    delete:
+      description: Ürünü siler (sadece ürün sahibi)
+      parameters:
+      - description: Ürün ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "403":
+          description: Forbidden
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Ürün Sil
+      tags:
+      - Products
+    get:
+      description: Belirli bir ürünün detaylarını getirir
+      parameters:
+      - description: Ürün ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Ürün Detayı
+      tags:
+      - Products
+    put:
+      consumes:
+      - application/json
+      description: Ürün bilgilerini günceller (sadece ürün sahibi)
+      parameters:
+      - description: Ürün ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Güncellenecek ürün bilgileri
+        in: body
+        name: product
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.CreateProductRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "403":
+          description: Forbidden
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Ürün Güncelle
+      tags:
+      - Products
+  /shops:
+    get:
+      description: Aktif olan tüm esnafları listeler
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Tüm Esnafları Listele
+      tags:
+      - Shops
+    post:
+      consumes:
+      - application/json
+      description: Yeni esnaf kaydı oluşturur (sadece shop rolündeki kullanıcılar)
+      parameters:
+      - description: Esnaf bilgileri
+        in: body
+        name: shop
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.CreateShopRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "403":
+          description: Forbidden
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Esnaf Oluştur
+      tags:
+      - Shops
+  /shops/{id}:
+    get:
+      description: Belirli bir esnafın detaylarını getirir
+      parameters:
+      - description: Esnaf ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Esnaf Detayı
+      tags:
+      - Shops
+    put:
+      consumes:
+      - application/json
+      description: Esnaf bilgilerini günceller
+      parameters:
+      - description: Esnaf ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Güncellenecek esnaf bilgileri
+        in: body
+        name: shop
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.CreateShopRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "403":
+          description: Forbidden
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Esnaf Güncelle
+      tags:
+      - Shops
+  /shops/{id}/products:
+    get:
+      description: Belirli bir esnafın ürünlerini listeler
+      parameters:
+      - description: Esnaf ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Esnafın Ürünlerini Listele
+      tags:
+      - Shops
+securityDefinitions:
+  BearerAuth:
+    description: Type "Bearer" followed by a space and JWT token.
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
