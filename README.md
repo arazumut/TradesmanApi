@@ -4,6 +4,7 @@ A simple yet powerful backend API that allows neighborhood small tradesmen to ma
 
 ## 🚀 Features
 
+
 - ✅ **JWT Authentication** - Secure login system
 - ✅ **Role-Based Authorization** - Admin, Shop, Customer roles
 - ✅ **Shop Management** - Create and edit shops
