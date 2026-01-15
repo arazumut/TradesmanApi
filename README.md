@@ -4,15 +4,15 @@ A simple yet powerful backend API that allows neighborhood small tradesmen to ma
 
 ## 🚀 Features
 
-
 - ✅ **JWT Authentication** - Secure login system
 - ✅ **Role-Based Authorization** - Admin, Shop, Customer roles
 - ✅ **Shop Management** - Create and edit shops
 - ✅ **Product Management** - Add, update, delete products
 - ✅ **Order System** - Customer orders and status tracking
 - ✅ **SQLite Database** - Lightweight and practical
-- ✅ **Swagger Documentation** - Interactive API documentation
-- ✅ **CORS Support** - Ready for frontend integration
+- ✅ **Swagger Documentation** - Interactive API 
+
+
 
 ## ⚙️ Technologies
 
